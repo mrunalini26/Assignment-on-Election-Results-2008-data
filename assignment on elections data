@@ -1,0 +1,316 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm
+from sklearn import datasets 
+import os
+os.chdir("C:\\Users\\User\\Downloads\\B10\\Assignments\\python")
+os.getcwd()
+df=pd.read_excel("Election Results 2008.xlsx")
+df.shape
+len(df.columns)
+len(df)
+df.head()
+df.columns
+df.info()
+f=df.State
+len(f.drop_duplicates())
+# =============================================================================
+# 1-Get list of competers and their ratios of voters by state wise
+# =============================================================================
+
+df['Obama_ratio']=df['Obama']/df['Total']
+df['McCain_ratio']=df['McCain']/df['Total']
+df['Nader_ratio']=df['Nader']/df['Total']
+df['Barr_ratio']=df['Barr']/df['Total']
+df['Baldwin_ratio']=df['Baldwin']/df['Total']
+df['McKinney_ratio']=df['McKinney']/df['Total']
+df['Others_ratio']=df['Others']/df['Total']
+
+df[['Obama_ratio','McCain_ratio','Nader_ratio','Barr_ratio','Baldwin_ratio','McKinney_ratio','Others_ratio','State']]
+
+#output:
+   Obama_ratio  McCain_ratio  ...  Others_ratio                 State
+0      0.387404      0.603169  ...      0.001764               ALABAMA
+1      0.378894      0.594245  ...      0.005304                ALASKA
+2      0.451153      0.536352  ...      0.000010               ARIZONA
+3      0.388647      0.587159  ...      0.001048              ARKANSAS
+4      0.049349      0.901092  ...      0.010386            CALIFORNIA
+5      0.205926      0.766105  ...      0.004206              COLORADO
+6      0.605888      0.382215  ...      0.000018           CONNECTICUT
+7      0.619427      0.369470  ...      0.000141              DELAWARE
+8      0.924571      0.065326  ...      0.004281  DISTRICT OF COLUMBIA
+9      0.510333      0.482153  ...      0.000823               FLORIDA
+10     0.469912      0.522049  ...      0.000016               GEORGIA
+11     0.718461      0.265817  ...           NaN                HAWAII
+12     0.360959      0.615255  ...           NaN                 IDAHO
+13     0.619164      0.367827  ...      0.000210              ILLINOIS
+14     0.499459      0.489139  ...      0.000033               INDIANA
+15     0.539280      0.443933  ...      0.004770                  IOWA
+16     0.416520      0.566123  ...      0.000029                KANSAS
+17     0.411706      0.574025  ...           NaN              KENTUCKY
+18     0.399329      0.585627  ...      0.005473             LOUISIANA
+19     0.577057      0.403840  ...      0.000589                 MAINE
+20     0.619193      0.364745  ...      0.003498              MARYLAND
+21     0.618016      0.359902  ...      0.004701         MASSACHUSETTS
+22     0.574313      0.409583  ...      0.000034              MICHIGAN
+23     0.540603      0.438229  ...      0.003546             MINNESOTA
+24     0.430016      0.561762  ...      0.000373           MISSISSIPPI
+25     0.492926      0.494261  ...           NaN              MISSOURI
+26     0.472685      0.495325  ...      0.021705               MONTANA
+27     0.415983      0.565319  ...      0.003541              NEBRASKA
+28     0.551467      0.426541  ...      0.006475                NEVADA
+29     0.541269      0.445214  ...      0.005097         NEW HAMPSHIRE
+30     0.572721      0.417039  ...      0.000589            NEW JERSEY
+31     0.569075      0.417790  ...           NaN            NEW MEXICO
+32     0.628021      0.361075  ...      0.001168              NEW YORK
+33     0.497044      0.493755  ...      0.003234        NORTH CAROLINA
+34     0.446205      0.532501  ...           NaN          NORTH DAKOTA
+35     0.514787      0.469352  ...      0.001253                  OHIO
+36     0.343549      0.656451  ...           NaN              OKLAHOMA
+37     0.567488      0.404010  ...      0.007447                OREGON
+38     0.546503      0.443007  ...           NaN          PENNSYLVANIA
+39     0.631315      0.352070  ...      0.000260          RHODE ISLAND
+40     0.448966      0.538736  ...           NaN        SOUTH CAROLINA
+41     0.447474      0.531590  ...           NaN          SOUTH DAKOTA
+42     0.418285      0.568970  ...      0.000899             TENNESSEE
+43     0.436831      0.554524  ...      0.000344                 TEXAS
+44     0.344057      0.625839  ...      0.000309                  UTAH
+45     0.674557      0.304492  ...      0.005858               VERMONT
+46     0.526295      0.463305  ...      0.001707              VIRGINIA
+47     0.576529      0.404763  ...      0.000443            WASHINGTON
+48     0.425898      0.557103  ...      0.000125         WEST VIRGINIA
+49     0.562178      0.423137  ...      0.002702             WISCONSIN
+50     0.325409      0.647763  ...      0.005973               WYOMING
+51     0.494585      0.490314  ...      0.001856            U.S. TOTAL
+
+[52 rows x 8 columns]
+# =============================================================================
+# 2-Code the state names using abbrevated codes(2) in abbreviations sheet
+# =============================================================================
+df['State'].str.upper()
+abbrev_us_state = dict(map(reversed, us_state_abbrev.items()))
+pd.DataFrame.from_dict(abbrev_us_state, orient='index')
+
+#output:
+                           0
+AL                   Alabama
+AK                    Alaska
+AS            American Samoa
+AZ                   Arizona
+AR                  Arkansas
+CA                California
+CO                  Colorado
+CT               Connecticut
+DE                  Delaware
+DC      District of Columbia
+FL                   Florida
+GA                   Georgia
+GU                      Guam
+HI                    Hawaii
+ID                     Idaho
+IL                  Illinois
+IN                   Indiana
+IA                      Iowa
+KS                    Kansas
+KY                  Kentucky
+LA                 Louisiana
+ME                     Maine
+MD                  Maryland
+MA             Massachusetts
+MI                  Michigan
+MN                 Minnesota
+MS               Mississippi
+MO                  Missouri
+MT                   Montana
+NE                  Nebraska
+NV                    Nevada
+NH             New Hampshire
+NJ                New Jersey
+NM                New Mexico
+NY                  New York
+NC            North Carolina
+ND              North Dakota
+MP  Northern Mariana Islands
+OH                      Ohio
+OK                  Oklahoma
+OR                    Oregon
+PA              Pennsylvania
+PR               Puerto Rico
+RI              Rhode Island
+SC            South Carolina
+SD              South Dakota
+TN                 Tennessee
+TX                     Texas
+UT                      Utah
+VT                   Vermont
+VI            Virgin Islands
+VA                  Virginia
+WA                Washington
+WV             West Virginia
+WI                 Wisconsin
+WY                   Wyoming
+
+# =============================================================================
+# #3-Can you calculate state wise ratios of population 
+# =============================================================================
+
+df['population_ratio']=(df['Total']/122237603)
+df[['State','population_ratio']]
+#output:
+                   State  population_ratio
+0                Alabama          0.017178
+1                 Alaska          0.002669
+2                Arizona          0.018762
+3               Arkansas          0.008889
+4             California          0.045501
+5               Colorado          0.011464
+6            Connecticut          0.013472
+7               Delaware          0.003374
+8   District of Columbia          0.002175
+9                Florida          0.068643
+10               Georgia          0.032105
+11                Hawaii          0.003711
+12                 Idaho          0.005359
+13              Illinois          0.045183
+14               Indiana          0.022506
+15                  Iowa          0.012575
+16                Kansas          0.010110
+17              Kentucky          0.014942
+18             Louisiana          0.016041
+19                 Maine          0.005981
+20              Maryland          0.021529
+21         Massachusetts          0.025205
+22              Michigan          0.040918
+23             Minnesota          0.023809
+24           Mississippi          0.010552
+25              Missouri          0.023930
+26               Montana          0.004009
+27              Nebraska          0.006555
+28                Nevada          0.007918
+29         New Hampshire          0.005816
+30            New Jersey          0.031645
+31            New Mexico          0.006791
+32              New York          0.062132
+33        North Carolina          0.035266
+34          North Dakota          0.002590
+35                  Ohio          0.046616
+36              Oklahoma          0.011966
+37                Oregon          0.014953
+38          Pennsylvania          0.049045
+39          Rhode Island          0.003843
+40        South Carolina          0.015715
+41          South Dakota          0.003125
+42             Tennessee          0.021268
+43                 Texas          0.066083
+44                  Utah          0.007791
+45               Vermont          0.002659
+46              Virginia          0.030459
+47            Washington          0.024844
+48         West Virginia          0.005837
+49             Wisconsin          0.024407
+50               Wyoming          0.002083
+51            U.S. Total          1.000000
+# =============================================================================
+# 4-Find out competers and their ratios of voters of USA population
+# =============================================================================
+df1=df.iloc[-1]
+d=df1[1:8]
+d/122237603
+
+#output:
+Obama         0.494585
+McCain        0.490314
+Nader       0.00602764
+Barr        0.00429102
+Baldwin     0.00160721
+McKinney     0.0013187
+Others      0.00185629
+Name: 51, dtype: object
+# =============================================================================
+# 5-Get region wise population ratios and counts
+# =============================================================================
+file="Election Results 2008.xlsx"
+data = pd.ExcelFile(file)
+print(data.sheet_names) #this returns the all the sheets in the excel file
+df1 = data.parse('Regions')
+df1.info
+df1.head(10)
+df['Regions']=df1['Location']
+df.Total.sum()
+#output:244475206
+df['Population_ratios']=(df["Total"]/122237603)
+
+p=df.groupby(['Regions'])['Population_ratios'].agg(['count','sum'])
+p.rename(columns={'sum': 'Population_ratios'})
+#output:
+               count  Population_ratios
+Regions                                
+Central            5           0.061106
+Central East      11           0.171173
+Central West       2           0.072638
+North Central      3           0.091899
+North East        10           0.168581
+North West         6           0.097141
+South Central      5           0.123361
+South East         5           0.115648
+South West         3           0.096368
+# =============================================================================
+# 6-Calculate North, South and Central region wise population ratios and counts
+# =============================================================================
+
+df.groupby(['Regions'])['Population_ratios'].value_counts()
+#output:
+Regions        Population_ratios
+Central        0.004009             1
+               0.010552             1
+               0.011464             1
+               0.012575             1
+               0.022506             1
+Central East   0.002590             1
+               0.002659             1
+               0.003125             1
+               0.003374             1
+               0.005359             1
+               0.005816             1
+               0.005981             1
+               0.010110             1
+               0.024844             1
+               0.045183             1
+               0.062132             1
+Central West   0.006555             1
+               0.066083             1
+North Central  0.015715             1
+               0.035266             1
+               0.040918             1
+North East     0.005837             1
+               0.006791             1
+               0.007791             1
+               0.007918             1
+               0.013472             1
+               0.014953             1
+               0.016041             1
+               0.021529             1
+               0.025205             1
+               0.049045             1
+North West     0.002669             1
+               0.003711             1
+               0.011966             1
+               0.023930             1
+               0.024407             1
+               0.030459             1
+South Central  0.008889             1
+               0.014942             1
+               0.021268             1
+               0.031645             1
+               0.046616             1
+South East     0.002175             1
+               0.003843             1
+               0.017178             1
+               0.023809             1
+               0.068643             1
+South West     0.018762             1
+               0.032105             1
+               0.045501             1
+Name: Population_ratios, dtype: int64
